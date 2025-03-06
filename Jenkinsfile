@@ -4,8 +4,11 @@ pipeline {
     tools {
         maven 'maven3'
         jdk 'jdk17'
+        
     }
-    environment{ 
+    
+    environment{
+        
         SCANNER_HOME = tool 'sonarqube'
         IMAGE_TAG = "v${BUILD_NUMBER}"
     }
@@ -81,6 +84,19 @@ pipeline {
                     withDockerRegistry(credentialsId: 'dockerhub-cred') {
                         sh 'docker push parthu210/bankapp:$IMAGE_TAG'
                     } 
+                }
+            }
+        }
+        stage('update menifestfile') {
+            steps {
+                script {
+                    cleanWs()
+                    withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh '''git clone https://github.com/${GIT_USERNAME}/Multi-Tier-BankApp-CD.git  
+                        cd Multi-Tier-BankApp-CD/bankapp 
+                        sed -i "s|parthu210/bankapp:.*|parthu210/bankapp:${IMAGE_TAG}|" bankapp-ds.yml'''
+
+                    }    
                 }
             }
         }
