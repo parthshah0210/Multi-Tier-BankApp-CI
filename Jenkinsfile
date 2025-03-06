@@ -92,10 +92,16 @@ pipeline {
                 script {
                     cleanWs()
                     withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh '''git clone https://github.com/${GIT_USERNAME}/Multi-Tier-BankApp-CD.git  
-                        cd Multi-Tier-BankApp-CD/bankapp 
-                        sed -i "s|parthu210/bankapp:.*|parthu210/bankapp:${IMAGE_TAG}|" bankapp-ds.yml'''
-
+                        sh '''
+                            git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/Multi-Tier-BankApp-CD.git
+                            cd Multi-Tier-BankApp-CD/bankapp 
+                            sed -i "s|parthu210/bankapp:.*|parthu210/bankapp:${IMAGE_TAG}|" bankapp-ds.yml
+                            git config user.name "${GIT_USERNAME}"
+                            git config user.email "parrthshaah@gmail.com"
+                            git add bankapp-ds.yml
+                            git commit -m "updated image tag to ${IMAGE_TAG}"
+                            git push origin main
+                        '''
                     }    
                 }
             }
