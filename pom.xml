@@ -89,5 +89,4 @@
             <url>http://194.113.194.248:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>
