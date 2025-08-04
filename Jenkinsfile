@@ -39,7 +39,7 @@ pipeline {
        
         stage('sonarqube analysis') {
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('sonar-server') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=bankapp -Dsonar.projectKey=bankapp \
                             -Dsonar.java.binaries=target '''    
                 }
@@ -59,7 +59,7 @@ pipeline {
         }
         stage('code deploy to Nexus') {
             steps {
-                withMaven(globalMavenSettingsConfig: 'maven-file', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+                withMaven(globalMavenSettingsConfig: 'parth', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
                     sh "mvn deploy -DskipTests=true"
                 }
             }
